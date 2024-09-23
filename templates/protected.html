@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex">
+    <div id="navbarColumn" class="flex flex-col justify-between bg-[#363636] h-[100vh] w-[200px]"
+        style="transition: width 0.5s;">
+        <div id="menu" class="menu">
+            <ul id="menu-list">
+                <li class="menu-item">
+                    <a class="menu-text text-blue-400 bg-white font-bold mb-[10px]" onclick="toggleSubmenu('submenu1')"
+                        title="Relatórios">
+                        Relatórios
+                    </a>
+                    <ul id="submenu1" class="submenu" style="display: none;">
+                        {% for content, iframe in user_content %}
+                        <li class="submenu-item">
+                            <a class="submenu-text text-blue-400 bg-white font-bold mb-[10px]"
+                                onclick="loadIframe('{{ iframe }}')" title="{{ content }}">
+                                {{ content }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="w-full p-2">
+            <a class="btn btn-warning w-full font-bold" href="/logout">
+                <span class="material-symbols-outlined"> logout </span>
+                <span id="sair">Sair</span>
+            </a>
+        </div>
+    </div>
+    <div id="contentColumn" class="column w-full h-full overflow-hidden">
+        <button id="toggleButton" class="button is-link" onclick="toggleNavbar()">
+            <span class="material-symbols-outlined text-4xl m-1">
+                menu_open
+            </span>
+        </button>
+        <div id="contentIframe" class="w-full h-full bg-black"></div>
+    </div>
+</div>
+
+<style>
+    .text-nav {
+        width: 50px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        white-space: nowrap;
+    }
+
+    .text-nav-logout {
+        width: 50px;
+        overflow: hidden;
+        /* text-overflow: ellipsis; */
+        display: inline-block;
+        white-space: nowrap;
+    }
+
+    .menu-div-toggle {
+        width: 70px;
+    }
+
+    .menu-el-toggle {
+        width: 50px;
+    }
+
+    iframe {
+        width: 100%;
+        height: calc(100vh - 48px);
+        overflow: auto;
+    }
+</style>
+
+<script>
+    function loadIframe(iframeCode) {
+        document.getElementById('contentIframe').innerHTML = iframeCode;
+    }
+
+    function toggleNavbar() {
+        var navbarColumn = document.getElementById('navbarColumn');
+        var navbarMenuDiv = document.getElementById('menu');
+        var navbarUl = document.getElementById('menu-list');
+        var navbarLi = document.getElementsByClassName('menu-item');
+        var navbarText = document.getElementsByTagName('a');
+        var sair = document.getElementById('sair');
+        var submenus = document.getElementsByClassName('submenu');
+
+        navbarColumn.classList.toggle('menu-div-toggle')
+        navbarMenuDiv.classList.toggle('menu-el-toggle')
+        navbarUl.classList.toggle('menu-el-toggle')
+
+        for (let index = 0; index < navbarLi.length; index++) {
+            navbarLi[index].classList.toggle('menu-el-toggle')
+        }
+
+        sair.classList.toggle('text-nav-logout')
+
+        for (let index = 0; index < (navbarText.length - 1); index++) {
+            navbarText[index].classList.toggle('text-nav')
+        }
+
+        for (let index = 0; index < submenus.length; index++) {
+            submenus[index].style.display = "none";
+        }
+
+        (sair.style.display !== 'none') ? sair.style.display = 'none' : sair.style.display = 'block'
+    }
+
+    function toggleSubmenu(submenuId) {
+        var submenu = document.getElementById(submenuId);
+        var navbarColumn = document.getElementById('navbarColumn');
+        if (navbarColumn.classList.contains('menu-div-toggle')) {
+            toggleNavbar();
+        }
+        if (submenu.style.display === "none") {
+            submenu.style.display = "block";
+        } else {
+            submenu.style.display = "none";
+        }
+    }
+</script>
+{% endblock %}
